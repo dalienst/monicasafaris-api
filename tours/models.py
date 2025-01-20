@@ -1,7 +1,6 @@
 from django.db import models
 from cloudinary.models import CloudinaryField
 from django.contrib.auth import get_user_model
-
 from accounts.abstracts import UniversalIdModel, TimeStampedModel, ReferenceSlugModel
 
 User = get_user_model()
@@ -16,6 +15,13 @@ class Tour(UniversalIdModel, TimeStampedModel, ReferenceSlugModel):
     euro = models.DecimalField(max_digits=10, decimal_places=2)
     pound = models.DecimalField(max_digits=10, decimal_places=2)
     dollar = models.DecimalField(max_digits=10, decimal_places=2)
+    discount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        help_text="Enter discount percentage (e.g., 10 for 10%)",
+    )
     duration = models.CharField(max_length=255, blank=True, null=True)
     capacity = models.CharField(blank=True, null=True, max_length=255)
     is_featured = models.BooleanField(default=False)
@@ -27,3 +33,15 @@ class Tour(UniversalIdModel, TimeStampedModel, ReferenceSlugModel):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        """
+        Adjusts the pricing if a discount is provided.
+        """
+        if self.discount and self.discount > 0:
+            # Calculate discounted prices
+            self.ksh = self.ksh * (1 - self.discount / 100)
+            self.euro = self.euro * (1 - self.discount / 100)
+            self.pound = self.pound * (1 - self.discount / 100)
+            self.dollar = self.dollar * (1 - self.discount / 100)
+        super().save(*args, **kwargs)

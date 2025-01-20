@@ -24,6 +24,7 @@ class TourSerializer(serializers.ModelSerializer):
             "euro",
             "pound",
             "dollar",
+            "discount",
             "duration",
             "capacity",
             "is_featured",
