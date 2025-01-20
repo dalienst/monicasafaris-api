@@ -15,7 +15,8 @@ class Booking(TimeStampedModel, UniversalIdModel, ReferenceSlugModel):
     email = models.EmailField()
     phone = models.CharField(max_length=20)
     date = models.DateField()
-    guests = models.PositiveIntegerField(default=1)
+    adults = models.PositiveIntegerField(default=1)
+    kids = models.PositiveBigIntegerField(default=0)
     special_requests = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=20, default="Pending")
     request_jeep = models.BooleanField(default=False)
@@ -53,7 +54,7 @@ class Booking(TimeStampedModel, UniversalIdModel, ReferenceSlugModel):
             "DOLLAR": self.tour.dollar,
         }
         rate = rate_mapping.get(self.currency, 0)
-        return rate * self.guests
+        return rate * (self.adults + self.kids)
 
     def save(self, *args, **kwargs):
         """

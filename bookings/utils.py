@@ -24,7 +24,8 @@ def send_client_booking_email(booking):
                 "email": booking.email,
                 "phone": booking.phone,
                 "date": booking.date,
-                "guests": booking.guests,
+                "adults": booking.adults,
+                "kids": booking.kids,
                 "special_requests": booking.special_requests,
                 "status": booking.status,
                 "request_jeep": booking.request_jeep,
@@ -62,13 +63,14 @@ def notify_owner_of_booking(booking):
         email_body = render_to_string(
             "notify_owner.html",
             {
-                 "booking": booking,
+                "booking": booking,
                 "tour": booking.tour.title,
                 "name": booking.name,
                 "email": booking.email,
                 "phone": booking.phone,
                 "date": booking.date,
-                "guests": booking.guests,
+                "adults": booking.adults,
+                "kids": booking.kids,
                 "special_requests": booking.special_requests,
                 "status": booking.status,
                 "request_jeep": booking.request_jeep,
@@ -79,7 +81,7 @@ def notify_owner_of_booking(booking):
                 "tour_url": tour_url,
                 "booking_url": booking_url,
                 "current_year": current_year,
-            }
+            },
         )
 
         send_mail(
